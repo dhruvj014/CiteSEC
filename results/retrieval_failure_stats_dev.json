@@ -1,0 +1,91 @@
+{
+  "split": "dev",
+  "definition": "miss = first gold page not in top 5 chunks",
+  "table_heavy_threshold_lines": 20,
+  "configs": {
+    "A": {
+      "n_questions": 50,
+      "n_misses": 38,
+      "wrong_document_not_in_top10": 8,
+      "right_doc_wrong_page": 30,
+      "gold_page_table_heavy": 30,
+      "duplicate_pages_in_top5": 6,
+      "rank_6_to_20": 12,
+      "rank_21_to_50": 9,
+      "not_in_top50": 17,
+      "two_digit_fy_without_year": 1
+    },
+    "B": {
+      "n_questions": 50,
+      "n_misses": 46,
+      "wrong_document_not_in_top10": 24,
+      "right_doc_wrong_page": 22,
+      "gold_page_table_heavy": 34,
+      "duplicate_pages_in_top5": 16,
+      "rank_6_to_20": 6,
+      "rank_21_to_50": 2,
+      "not_in_top50": 38,
+      "two_digit_fy_without_year": 3
+    },
+    "C": {
+      "n_questions": 50,
+      "n_misses": 33,
+      "wrong_document_not_in_top10": 2,
+      "right_doc_wrong_page": 31,
+      "gold_page_table_heavy": 28,
+      "duplicate_pages_in_top5": 10,
+      "rank_6_to_20": 12,
+      "rank_21_to_50": 8,
+      "not_in_top50": 13,
+      "two_digit_fy_without_year": 0
+    },
+    "D": {
+      "n_questions": 50,
+      "n_misses": 43,
+      "wrong_document_not_in_top10": 23,
+      "right_doc_wrong_page": 20,
+      "gold_page_table_heavy": 33,
+      "duplicate_pages_in_top5": 15,
+      "rank_6_to_20": 4,
+      "rank_21_to_50": 8,
+      "not_in_top50": 31,
+      "two_digit_fy_without_year": 3
+    },
+    "E": {
+      "n_questions": 50,
+      "n_misses": 35,
+      "wrong_document_not_in_top10": 3,
+      "right_doc_wrong_page": 32,
+      "gold_page_table_heavy": 26,
+      "duplicate_pages_in_top5": 9,
+      "rank_6_to_20": 12,
+      "rank_21_to_50": 5,
+      "not_in_top50": 18,
+      "two_digit_fy_without_year": 2
+    },
+    "F": {
+      "n_questions": 50,
+      "n_misses": 32,
+      "wrong_document_not_in_top10": 2,
+      "right_doc_wrong_page": 30,
+      "gold_page_table_heavy": 24,
+      "duplicate_pages_in_top5": 14,
+      "rank_6_to_20": 12,
+      "rank_21_to_50": 2,
+      "not_in_top50": 18,
+      "two_digit_fy_without_year": 3
+    },
+    "G": {
+      "n_questions": 50,
+      "n_misses": 30,
+      "wrong_document_not_in_top10": 5,
+      "right_doc_wrong_page": 25,
+      "gold_page_table_heavy": 22,
+      "duplicate_pages_in_top5": 16,
+      "rank_6_to_20": 15,
+      "rank_21_to_50": 4,
+      "not_in_top50": 11,
+      "two_digit_fy_without_year": 2
+    }
+  }
+}

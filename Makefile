@@ -19,7 +19,13 @@ index:
 	$(PY) scripts/validate_phase2.py
 
 eval:
-	@echo "Phase 3-4"
+	$(PY) -m citesec.eval.run_retrieval_eval --split dev --select --verify-repeat
+	$(PY) scripts/analyze_failures.py
+	$(PY) scripts/make_report.py
+
+eval-test:
+	$(PY) -m citesec.eval.run_retrieval_eval --split test
+	$(PY) scripts/make_report.py
 
 serve:
 	@echo "Phase 5"
