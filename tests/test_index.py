@@ -37,6 +37,9 @@ def test_tokenize_keeps_financial_numbers() -> None:
     assert "12.5%" in toks and "12.5" in toks
     assert "1,234" in toks and "1234" in toks  # parentheses (negatives) stripped
     assert "the" not in tokenize("the revenue")
+    # digit-led names stay whole, they must not split into a number and a letter
+    assert tokenize("Is 3M's 10K filing here?") == ["3m", "10k", "filing", "here"]
+    assert tokenize("grew 3 million") == ["grew", "3", "million"]
     # a table cell "4,200.5" and a query "$4,200.5" share the bare token
     assert set(tokenize("4,200.5")) & set(toks) == {"4200.5"}
 
@@ -85,6 +88,21 @@ def test_bm25_round_trip_rank_one_and_save_load(tmp_path: Path) -> None:
     for c in chunks:
         assert loaded.search(c.embed_text, k=3)[0][0] == c.chunk_id
     assert loaded.search("zzzzunknownterm", k=3) == []
+
+
+def test_allowed_restricts_dense_and_bm25() -> None:
+    chunks = make_chunks()
+    texts = [c.embed_text for c in chunks]
+    ids = [c.chunk_id for c in chunks]
+    allowed = np.array([3, 4, 5])
+    dense = DenseIndex.build(fake_embed(texts), ids)
+    res = dense.search(fake_embed(texts[:1]), k=10, allowed=allowed)[0]
+    assert {r[0] for r in res} <= {"c3", "c4", "c5"} and len(res) == 3
+    bm25 = BM25Index.build(texts, ids)
+    hits = bm25.search("revenue segment", k=10, allowed=allowed)
+    assert hits and {h[0] for h in hits} <= {"c3", "c4", "c5"}
+    assert bm25.search("revenue", k=5, allowed=np.array([], dtype=int)) == []
+    assert dense.search(fake_embed(texts[:1]), k=5, allowed=np.array([], dtype=int)) == [[]]
 
 
 def test_bm25_exact_number_match() -> None:

@@ -11,19 +11,21 @@ import re
 from pathlib import Path
 
 import bm25s
+import numpy as np
 
 IDS_FILE = "bm25_ids.json"
-_TOKEN_RE = re.compile(r"\(?\$?\d[\d,]*(?:\.\d+)?%?\)?|[a-z][a-z0-9'\-]*")
+# alternatives in order: digit-led names ("3m", "10k", "401k"), numbers, words
+_TOKEN_RE = re.compile(r"\d+[a-z][a-z0-9]*|\(?\$?\d[\d,]*(?:\.\d+)?%?\)?|[a-z][a-z0-9'\-]*")
 STOPWORDS = frozenset(
     "a an and are as at be by for from has have in is it its of on or that the this to was were "
-    "what which who will with".split()
+    "what which who will with s".split()  # "s" is what is left of possessives like "3M's"
 )
 
 
 def tokenize(text: str) -> list[str]:
     out: list[str] = []
     for tok in _TOKEN_RE.findall(text.lower()):
-        if tok[0].isalpha():
+        if tok[0].isalpha() or (tok[0].isdigit() and tok[-1].isalpha()):
             if tok not in STOPWORDS:
                 out.append(tok)
             continue
@@ -47,12 +49,20 @@ class BM25Index:
         retriever.index([tokenize(t) or ["<empty>"] for t in texts], show_progress=False)
         return cls(retriever, list(ids))
 
-    def search(self, query: str, k: int) -> list[tuple[str, float]]:
+    def search(self, query: str, k: int,
+               allowed: np.ndarray | None = None) -> list[tuple[str, float]]:
+        """Top-k for one query. `allowed` restricts results to those row positions."""
         toks = [t for t in tokenize(query) if t in self.retriever.vocab_dict]
-        if not toks:
+        if not toks or (allowed is not None and len(allowed) == 0):
             return []
-        docs, scores = self.retriever.retrieve([toks], k=min(k, len(self.ids)),
-                                               show_progress=False)
+        mask = None
+        limit = len(self.ids)
+        if allowed is not None:
+            mask = np.zeros(len(self.ids), dtype=np.float32)
+            mask[allowed] = 1.0
+            limit = len(allowed)
+        docs, scores = self.retriever.retrieve([toks], k=min(k, limit), show_progress=False,
+                                               weight_mask=mask)
         return [(self.ids[int(d)], float(s)) for d, s in zip(docs[0], scores[0], strict=True)
                 if s > 0]
 

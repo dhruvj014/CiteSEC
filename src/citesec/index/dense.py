@@ -25,10 +25,20 @@ class DenseIndex:
         index.add(vecs)
         return cls(index, list(ids))
 
-    def search(self, qvecs: np.ndarray, k: int) -> list[list[tuple[str, float]]]:
+    def search(self, qvecs: np.ndarray, k: int,
+               allowed: np.ndarray | None = None) -> list[list[tuple[str, float]]]:
+        """Top-k per query vector. `allowed` restricts results to those row positions."""
         q = np.ascontiguousarray(qvecs, dtype=np.float32).copy()
         faiss.normalize_L2(q)
-        scores, idx = self.index.search(q, min(k, len(self.ids)))
+        params = None
+        limit = len(self.ids)
+        if allowed is not None:
+            ids = np.ascontiguousarray(allowed, dtype=np.int64)
+            params = faiss.SearchParameters(sel=faiss.IDSelectorBatch(ids))
+            limit = len(ids)
+        if limit == 0:
+            return [[] for _ in range(len(q))]
+        scores, idx = self.index.search(q, min(k, limit), params=params)
         return [
             [(self.ids[j], float(s)) for j, s in zip(row_i, row_s, strict=True) if j >= 0]
             for row_i, row_s in zip(idx, scores, strict=True)

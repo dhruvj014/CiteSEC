@@ -58,6 +58,11 @@ class ChunkStore:
         for r in cur:
             yield self._row(r)
 
+    def company_period(self) -> tuple[list[str], list[str]]:
+        """Company and period of every chunk in index row order, for metadata filtering."""
+        rows = self.db.execute("SELECT company, period FROM chunks ORDER BY pos").fetchall()
+        return [r[0] for r in rows], [r[1] for r in rows]
+
     def get(self, chunk_id: str) -> Chunk | None:
         r = self.db.execute(
             f"SELECT {', '.join(COLUMNS)} FROM chunks WHERE chunk_id = ?", (chunk_id,)

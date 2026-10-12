@@ -1,0 +1,11 @@
+{
+  "config_id": "G",
+  "chunker": "structured",
+  "mode": "hybrid",
+  "rerank": true,
+  "use_filter": true,
+  "selected_on": "dev",
+  "criterion": "max hit@5, then mrr, then lowest id, among structured configs C-G",
+  "dev_hit@5": 0.4,
+  "dev_mrr": 0.3073174325674326
+}
