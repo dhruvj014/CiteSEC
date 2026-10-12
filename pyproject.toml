@@ -21,6 +21,13 @@ dependencies = [
   "python-dotenv==1.2.4",
   "RapidFuzz==3.14.6",
   "markdownify==1.2.3",
+  "numpy==2.5.4",
+  "faiss-cpu==1.15.1",
+  "bm25s==0.3.13",
+  "sentence-transformers==6.1.0",
+  "transformers==5.19.0",
+  # torch is installed separately for CUDA, see README:
+  # pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 ]
 
 [project.optional-dependencies]

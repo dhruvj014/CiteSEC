@@ -15,7 +15,8 @@ parse:
 	$(PY) scripts/parse_data.py
 
 index:
-	@echo "Phase 2"
+	$(PY) scripts/build_index.py --chunker both
+	$(PY) scripts/validate_phase2.py
 
 eval:
 	@echo "Phase 3-4"

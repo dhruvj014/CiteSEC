@@ -62,4 +62,9 @@ class Chunk(BaseModel):
     section: str | None = None
     text: str
     is_table: bool = False
-    n_tokens: int
+    n_tokens: int  # tokens of embed_text (header plus text), the quantity the cap applies to
+    header: str = ""  # context header, embedded with the text but never displayed
+
+    @property
+    def embed_text(self) -> str:
+        return f"{self.header}\n{self.text}" if self.header else self.text

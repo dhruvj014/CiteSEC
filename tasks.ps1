@@ -5,6 +5,7 @@ switch ($Task) {
     "setup" { python -m venv .venv; & $py -m pip install -e ".[dev]" }
     "data"  { & $py scripts/download_data.py; & $py scripts/parse_data.py; & $py scripts/data_stats.py }
     "parse" { & $py scripts/parse_data.py }
+    "index" { & $py scripts/build_index.py --chunker both; & $py scripts/validate_phase2.py }
     "test"  { & $py -m pytest -q }
     "lint"  { & $py -m ruff check . }
     default { Write-Error "Unknown task $Task. Phases 2-5 add index, eval, serve." }

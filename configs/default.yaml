@@ -23,6 +23,7 @@ chunking:
   naive_overlap: 64
   structured_target: 350
   structured_cap: 512
+  structured_overlap: 64
 retrieval:
   top_n: 50
   rrf_k: 60
