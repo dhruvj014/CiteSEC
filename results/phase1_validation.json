@@ -1,0 +1,127 @@
+{
+  "n_questions": 150,
+  "n_gold_docs": 84,
+  "missing_pdfs": [],
+  "unparsed_docs": [],
+  "n_evidence": 189,
+  "match_threshold": 85.0,
+  "offset_counts": {
+    "-1": 0,
+    "0": 187,
+    "1": 0,
+    "no_match": 2
+  },
+  "zero_indexed_confirmed": true,
+  "random_sample_10": [
+    {
+      "id": "financebench_id_01476",
+      "doc": "PEPSICO_2023Q1_EARNINGS",
+      "page": 0,
+      "scores": {
+        "-1": 0.0,
+        "0": 100.0,
+        "1": 47.00315457413249
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_08135",
+      "doc": "AMAZON_2017_10K",
+      "page": 37,
+      "scores": {
+        "-1": 50.61349693251533,
+        "0": 99.75,
+        "1": 50.50798258345428
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_01865",
+      "doc": "3M_2022_10K",
+      "page": 24,
+      "scores": {
+        "-1": 51.06382978723405,
+        "0": 96.27906976744185,
+        "1": 41.3953488372093
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_07661",
+      "doc": "BLOCK_2020_10K",
+      "page": 89,
+      "scores": {
+        "-1": 39.0,
+        "0": 99.5,
+        "1": 40.25
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_00685",
+      "doc": "BESTBUY_2023_10K",
+      "page": 39,
+      "scores": {
+        "-1": 48.54881266490765,
+        "0": 100.0,
+        "1": 50.940665701881336
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_04254",
+      "doc": "AMERICANWATERWORKS_2021_10K",
+      "page": 87,
+      "scores": {
+        "-1": 61.09589041095891,
+        "0": 99.25,
+        "1": 54.01459854014598
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_00684",
+      "doc": "AMCOR_2023_10K",
+      "page": 49,
+      "scores": {
+        "-1": 38.50267379679144,
+        "0": 99.46524064171123,
+        "1": 68.58974358974359
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_06741",
+      "doc": "WALMART_2020_10K",
+      "page": 55,
+      "scores": {
+        "-1": 41.83835182250396,
+        "0": 100.0,
+        "1": 100.0
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_06655",
+      "doc": "AMAZON_2017_10K",
+      "page": 37,
+      "scores": {
+        "-1": 50.61349693251533,
+        "0": 99.75,
+        "1": 50.50798258345428
+      },
+      "best_offset": 0
+    },
+    {
+      "id": "financebench_id_00601",
+      "doc": "ULTABEAUTY_2023Q4_EARNINGS",
+      "page": 1,
+      "scores": {
+        "-1": 71.44948755490483,
+        "0": 100.0,
+        "1": 48.75000000000001
+      },
+      "best_offset": 0
+    }
+  ]
+}

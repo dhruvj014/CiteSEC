@@ -1,0 +1,79 @@
+{
+  "financebench": {
+    "n_questions": 150,
+    "n_docs_in_metadata": 360,
+    "n_gold_docs": 84,
+    "n_gold_docs_parsed": 84,
+    "gold_pages": 12013,
+    "gold_chars": 41576375,
+    "n_evidence_entries": 189,
+    "n_companies": 32,
+    "gold_docs_by_type": {
+      "10k": 64,
+      "10q": 8,
+      "8k": 6,
+      "Earnings": 6
+    },
+    "questions_by_type": {
+      "metrics-generated": 50,
+      "domain-relevant": 50,
+      "novel-generated": 50
+    },
+    "questions_by_reasoning": {
+      "Information extraction": 31,
+      "Logical reasoning (based on numerical reasoning)": 5,
+      "Logical reasoning (based on numerical reasoning) OR Numerical reasoning OR Logical reasoning": 4,
+      "null": 50,
+      "Logical reasoning (based on numerical reasoning) OR Logical reasoning": 5,
+      "Numerical reasoning": 43,
+      "Numerical reasoning OR information extraction": 4,
+      "Numerical reasoning OR Logical reasoning": 6,
+      "Information extraction OR Logical reasoning OR": 1,
+      "Information extraction OR Logical reasoning": 1
+    },
+    "questions_by_company": {
+      "3M": 8,
+      "Activision Blizzard": 2,
+      "Adobe": 5,
+      "AES Corporation": 3,
+      "Amazon": 3,
+      "Amcor": 9,
+      "AMD": 8,
+      "American Express": 7,
+      "American Water Works": 3,
+      "Best Buy": 8,
+      "Block": 3,
+      "Boeing": 8,
+      "Coca-Cola": 3,
+      "Corning": 4,
+      "Costco": 1,
+      "CVS Health": 4,
+      "Foot Locker": 2,
+      "General Mills": 4,
+      "Johnson & Johnson": 9,
+      "JPMorgan": 5,
+      "Kraft Heinz": 1,
+      "Lockheed Martin": 3,
+      "MGM Resorts": 7,
+      "Microsoft": 2,
+      "Netflix": 2,
+      "Nike": 4,
+      "Paypal": 1,
+      "PepsiCo": 11,
+      "Pfizer": 6,
+      "Ulta Beauty": 6,
+      "Verizon": 5,
+      "Walmart": 3
+    }
+  },
+  "edgar": {
+    "n_filings": 123,
+    "n_companies": 40,
+    "by_form": {
+      "10-K": 118,
+      "10-Q": 5
+    },
+    "section_blocks": 3177,
+    "chars": 81917552
+  }
+}
