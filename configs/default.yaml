@@ -1,0 +1,35 @@
+seed: 42
+paths:
+  raw_financebench: data/raw/financebench
+  raw_edgar: data/raw/edgar
+  processed: data/processed
+  results: results
+financebench:
+  repo: patronus-ai/financebench
+  branch: main
+edgar:
+  rate_limit_per_sec: 5
+  n_companies: 40
+  n_10k_per_company: 3
+  n_10q_total: 5
+  # Real large caps kept OUT of the index on purpose (Type A unanswerable questions)
+  holdout_tickers: [UNH, XOM, HD, PG, LLY, NVDA, TSLA, V, ABBV, CSCO]
+  # Candidate pool, FinanceBench companies are removed at runtime
+  candidates: [CVX, MRK, TMO, ABT, DHR, ACN, TXN, QCOM, HON, UPS, CAT, DE, GS, MS, BLK, LOW,
+    TGT, SBUX, MDLZ, MO, PM, T, TMUS, DIS, CMCSA, NEE, DUK, SO, GE, RTX, NOC, GD, AMGN, GILD,
+    BMY, ISRG, INTU, MU, AMAT, F, GM, IBM, AVGO, LIN, SPGI, ELV, MMM, BKNG]
+chunking:
+  naive_tokens: 512
+  naive_overlap: 64
+  structured_target: 350
+  structured_cap: 512
+retrieval:
+  top_n: 50
+  rrf_k: 60
+  rerank_top: 5
+models:
+  embed: BAAI/bge-base-en-v1.5
+  reranker: BAAI/bge-reranker-base
+  generator: qwen2.5:7b-instruct
+device_embed: cuda
+device_rerank: cuda

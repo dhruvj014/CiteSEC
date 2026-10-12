@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+data/*
+!data/eval/
+data/eval/*
+!data/eval/*.jsonl
+!data/eval/split.json
+models/
+*.egg-info/
+extras/
