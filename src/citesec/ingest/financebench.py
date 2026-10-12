@@ -32,8 +32,8 @@ def _to_evidence(e: dict) -> Evidence:
 def load_docs(fb_dir: Path) -> dict[str, DocInfo]:
     docs: dict[str, DocInfo] = {}
     for r in _read_jsonl(fb_dir / DOCS_FILE):
-        # upstream misspells the sector key as "comany_sector_gics"
-        sector = r.get("comany_sector_gics") or r.get("company_sector_gics")
+        # the released file uses "gics_sector", the dataset card says "comany_sector_gics"
+        sector = r.get("gics_sector") or r.get("comany_sector_gics") or r.get("company_sector_gics")
         docs[r["doc_name"]] = DocInfo(
             doc_name=r["doc_name"],
             doc_type=r["doc_type"],
