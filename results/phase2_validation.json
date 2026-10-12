@@ -1,0 +1,87 @@
+{
+  "naive": {
+    "basic": {
+      "n_chunks": 75469,
+      "empty_text": 0,
+      "over_cap": 0,
+      "over_cap_examples": [],
+      "n_tokens_field_matches": 2000,
+      "max_tokens": 512,
+      "unique_ids": true
+    },
+    "round_trip": {
+      "n": 300,
+      "dense_rank1_pct": 99.67,
+      "bm25_rank1_pct": 99.33
+    }
+  },
+  "structured": {
+    "basic": {
+      "n_chunks": 128020,
+      "empty_text": 0,
+      "over_cap": 0,
+      "over_cap_examples": [],
+      "n_tokens_field_matches": 2000,
+      "max_tokens": 509,
+      "unique_ids": true
+    },
+    "pages": {
+      "fb_chunks": 46018,
+      "fb_chunks_with_valid_page": 46018,
+      "pct_valid_page": 100.0,
+      "chunks_spanning_pages": 0,
+      "spanning_examples": [],
+      "chunks_over_5pct_ngrams_missing_from_own_page": 745,
+      "not_contained_examples": [
+        "structured:3M_2018_10K:00026",
+        "structured:3M_2018_10K:00053",
+        "structured:3M_2018_10K:00075",
+        "structured:3M_2018_10K:00193",
+        "structured:3M_2018_10K:00311"
+      ]
+    },
+    "tables": {
+      "pages_sampled": 20,
+      "tables_intact_single_chunk": 7,
+      "tables_split_with_repeated_header": 14,
+      "tables_broken": 0,
+      "examples": [
+        {
+          "doc": "AMCOR_2023Q4_EARNINGS",
+          "page": 9,
+          "pieces": 1,
+          "first_piece": "| ($ million) | Three M Flexibles | onths Ended Jun Rigid Packaging | e 30 Total | Twelve Flexibles | Months Ended Ju Rigid Packaging | ne 30 Total |\n| --- | --- | --- | --- | --- | --- | --- |\n| Net sales fiscal year 2023 | 2,777 | 897 | 3,673 | 11,154 | 3,540 | 14,694 |\n| Net sales fiscalyear 2022 | 2,967 | 942 | 3,909 | 11,151 | 3,393 | 14,544 |\n| Reported Growth % | (6) | (5) | (6) | \u2014 | 4 | 1 |\n| FX % | 1 | (1) | \u2014 | (4) | (1) | (3) |\n| Constant Currency Growth % | (7) | (4) | (6) | 4 | 5 | 4 |\n| Raw Material Pass Through % | 1 | \u2014 | 1 | 5 | 8 | 5 |\n| Items affectingcomparability% | (3) |"
+        },
+        {
+          "doc": "3M_2022_10K",
+          "page": 51,
+          "pieces": 2,
+          "first_piece": "| (Millions) | 2022 | 2021 | 2020 |\n| --- | --- | --- | --- |\n| Cash Flows from Operating Activities |  |  |  |\n| Net income including noncontrolling interest | $ 5,791 | $ 5,929$ | 5,453 |\n| Adjustments to reconcile net income including noncontrolling interest to net cash provided by operating |  |  |  |\n| activities |  |  |  |\n| Depreciation and amortization | 1,831 | 1,915 | 1,911 |\n| Long-lived and indefinite-lived asset impairment expense | 618 | \u2014 | 6 |\n| Goodwill impairment expense | 271 | \u2014 | \u2014 |\n| Company pension and postretirement contributions | (158) | (180) | (156) |\n| Company pen"
+        },
+        {
+          "doc": "CORNING_2022_10K",
+          "page": 59,
+          "pieces": 2,
+          "first_piece": "<u>Table of Contents</u>\n| Consolidated Balance Sheets | Corning Incorporated and | Subsidiary Companies |\n| --- | --- | --- |\n|  | Decem | ber 31, |\n| (in millions,except share andper share amounts) | 2022 | 2021 |\n| Assets |  |  |\n| Current assets: |  |  |\n| Cash and cash equivalents | $ 1,671 | $ 2,148 |\n| Trade accounts receivable, net of doubtful accounts - $40 and $42 | 1,721 | 2,004 |\n| Inventories (Note 5) | 2,904 | 2,481 |\n| Other current assets (Notes 10 and 14) | 1,157 | 1,026 |\n| Total current assets | 7,453 | 7,659 |\n| Property, plant and equipment, net of accumulated depreciation"
+        },
+        {
+          "doc": "COCACOLA_2017_10K",
+          "page": 75,
+          "pieces": 2,
+          "first_piece": "| December 31, | 2017 | 2016 |\n| --- | --- | --- |\n| (In millions except par value) |  |  |\n| ASSETS |  |  |\n| CURRENT ASSETS |  |  |\n| Cash and cash equivalents | $ 6,006 | $ 8,555 |\n| Short-term investments | 9,352 | 9,595 |\n| TOTAL CASH, CASH EQUIVALENTS AND SHORT-TERM INVESTMENTS | 15,358 | 18,150 |\n| Marketable securities | 5,317 | 4,051 |\n| Trade accounts receivable, less allowances of $477 and $466, respectively | 3,667 | 3,856 |\n| Inventories | 2,655 | 2,675 |\n| Prepaid expenses and other assets | 2,000 | 2,481 |\n| Assets held for sale | 219 | 2,797 |\n| Assets held for sale \u2014 discontin"
+        },
+        {
+          "doc": "BLOCK_2020_10K",
+          "page": 89,
+          "pieces": 3,
+          "first_piece": "_(In thousands)_\n|  | Yea | r Ended Decembe | r 31, |\n| --- | --- | --- | --- |\n|  | 2020 | 2019 | 2018 |\n| Cash flows from operating activities: |  |  |  |\n| Net income (loss) | $ 213,105 | $ 375,446 | $ (38,453) |\n| Adjustments to reconcile net loss to net cash provided by operating activities: |  |  |  |\n| Depreciation and amortization | 84,212 | 75,598 | 60,961 |\n| Non-cash interest and other | 76,129 | 33,478 | 28,512 |\n| Loss on extinguishment of long-term debt | 6,651 | \u2014 | 5,047 |\n| Non-cash lease expense | 70,253 | 29,696 | \u2014 |\n| Share-based compensation | 397,800 | 297,863 | 216,881 "
+        }
+      ]
+    },
+    "round_trip": {
+      "n": 300,
+      "dense_rank1_pct": 100.0,
+      "bm25_rank1_pct": 99.0
+    }
+  }
+}

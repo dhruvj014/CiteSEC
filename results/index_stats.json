@@ -1,0 +1,44 @@
+{
+  "naive": {
+    "n_docs": 207,
+    "n_chunks": 75469,
+    "n_chunks_financebench": 22526,
+    "n_chunks_edgar": 52943,
+    "n_table_chunks": 0,
+    "tokens_mean": 511.4,
+    "tokens_p50": 512,
+    "tokens_p95": 512,
+    "tokens_max": 512,
+    "seconds": {
+      "chunk_s": 111.9,
+      "embed_s": 27.7,
+      "dense_s": 0.5,
+      "bm25_s": 21.7
+    },
+    "index_bytes": 527656963,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_device": "cuda",
+    "limit_docs": null
+  },
+  "structured": {
+    "n_docs": 207,
+    "n_chunks": 128020,
+    "n_chunks_financebench": 46018,
+    "n_chunks_edgar": 82002,
+    "n_table_chunks": 39374,
+    "tokens_mean": 250.8,
+    "tokens_p50": 264,
+    "tokens_p95": 481,
+    "tokens_max": 509,
+    "seconds": {
+      "chunk_s": 181.3,
+      "embed_s": 1175.2,
+      "dense_s": 1.4,
+      "bm25_s": 30.2
+    },
+    "index_bytes": 662660629,
+    "embed_model": "BAAI/bge-base-en-v1.5",
+    "embed_device": "cuda",
+    "limit_docs": null
+  }
+}
