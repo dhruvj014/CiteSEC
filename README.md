@@ -2,7 +2,7 @@
 
 Answers natural-language questions over SEC 10-K and 10-Q filings with exact citations (document and page), refuses when evidence is weak, and is evaluated on FinanceBench with retrieval ablations.
 
-Status: Phases 1 (data ingestion), 2 (chunking and indexing) and 3 (retrieval and retrieval evaluation) complete. Retrieval tables are in `BENCHMARKS.md`. Results are not yet available, see `BENCHMARKS.md` once generated in Phase 5. Every reported number comes from `results/*.json`.
+Status: Phases 1 (data ingestion), 2 (chunking and indexing), 3 (retrieval evaluation) and 4 (generation, citations, abstention, answer evaluation) complete. Results are in `BENCHMARKS.md`. Serving (Phase 5) is next. Results are not yet available, see `BENCHMARKS.md` once generated in Phase 5. Every reported number comes from `results/*.json`.
 
 ## Quickstart (Windows, venv only)
 
@@ -15,6 +15,8 @@ copy .env.example .env      # then set EDGAR_IDENTITY="Your Name you@example.com
 .\tasks.ps1 data            # download + parse + stats (PDF parsing takes hours on CPU)
 .\tasks.ps1 index           # chunk, embed, build FAISS and BM25 indexes (about 45 min on an RTX 4060)
 .\tasks.ps1 eval            # retrieval ablation on the dev split, failure stats, BENCHMARKS.md
+ollama pull qwen2.5:7b      # local generator and judge
+.\tasks.ps1 answers-dev     # answer evaluation on dev (needs Ollama running, about 45 min on an RTX 4060)
 .\tasks.ps1 test
 ```
 

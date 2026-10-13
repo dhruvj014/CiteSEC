@@ -78,6 +78,117 @@ Milliseconds per query, p50 / p95, single query at a time, 100 test questions.
 - Seeded rerun gave identical metrics: True
 - Retrieval config selected on dev: **G** (criterion: max hit@5, then mrr, then lowest id, among structured configs C-G)
 
-## Answer quality, abstention and serving
+## Answer quality
 
-_not measured_ (Phases 4 and 5).
+### Test split
+
+100 answerable questions per system. Percent. Accuracy is the judge verdict CORRECT over all answerable questions, so refusals count against it. Judge: qwen2.5:7b (local (Ollama)), generator: qwen2.5:7b. Citation validity and support are measured on the raw model output, before invalid citations are removed, so S2, S3 and S4 share them. Cite support is a heuristic: a figure or key phrase from the claim appears in the cited block. Cited answers is the share of answered questions with at least one valid citation. Wrong is the share of answerable questions answered incorrectly, the hallucination rate. *Faithful is judged by the same local model and has not been validated against labels, treat it as indicative only.
+
+| System | Description | Accuracy | Accuracy when answered | Wrong | False refusal | Faithful* | Cite valid | Cite support | Cited answers | Latency s p50 / p95 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| S0 | Closed-book LLM, no retrieval | 20.0 | 20.6 | 77.0 | 3.0 | n/a | n/a | n/a | n/a | 5.3 / 12.9 |
+| S1 | Naive chunks, dense top-5, no rerank, no gate | 17.0 | 46.0 | 20.0 | 63.0 | 32.4 | 94.4 | 64.2 | 86.5 | 2.0 / 18.5 |
+| S2 | Selected retrieval (structured, hybrid, rerank, filter), no gate | 39.0 | 57.4 | 29.0 | 32.0 | 45.6 | 94.9 | 72.3 | 83.8 | 3.4 / 17.0 |
+| S3 | S2 + citation verification (invalid citations removed) | 39.0 | 57.4 | 29.0 | 32.0 | 47.1 | 94.9 | 72.3 | 83.8 | 3.4 / 17.0 |
+| S4 | S3 + confidence gate (full system) | 39.0 | 59.1 | 27.0 | 34.0 | 48.5 | 95.9 | 69.5 | 83.3 | 2.7 / 16.8 |
+
+### Test split accuracy by group (S4)
+
+| Group | n | Accuracy |
+|---|---|---|
+| type: domain-relevant | 33 | 45.5 |
+| type: metrics-generated | 33 | 33.3 |
+| type: novel-generated | 34 | 38.2 |
+| reasoning: information extraction | 23 | 69.6 |
+| reasoning: logical reasoning | 8 | 0.0 |
+| reasoning: numerical reasoning | 35 | 28.6 |
+| reasoning: unlabeled | 34 | 38.2 |
+
+### Outcomes by retrieval (test split, S4)
+
+Counts of answerable questions for S4, split by whether retrieval put the gold page in the context.
+
+| Retrieval outcome | n | Correct | Incorrect | Refused |
+|---|---|---|---|---|
+| Gold page in the 5 context blocks | 49 | 30 | 15 | 4 |
+| Gold page missing from context | 51 | 9 | 12 | 30 |
+
+Unanswerable questions refused by the confidence gate: 18, by the model's own INSUFFICIENT_EVIDENCE reply: 23, by judge ruling only: 0 (of 41 unanswerable).
+
+### Answer latency (test split)
+
+Milliseconds per question, p50 / p95, local Ollama generator on a single GPU.
+
+| System | retrieve | rerank | generate | total |
+|---|---|---|---|---|
+| S0 | - | - | 5344 / 12949 | 5344 / 12949 |
+| S1 | 63 / 86 | 0 / 0 | 1915 / 18479 | 1982 / 18544 |
+| S2 | 65 / 130 | 250 / 293 | 3077 / 16714 | 3421 / 17024 |
+| S3 | 65 / 130 | 250 / 293 | 3077 / 16714 | 3421 / 17024 |
+| S4 | 65 / 130 | 250 / 293 | 2401 / 16513 | 2693 / 16818 |
+
+### Dev split
+
+50 answerable questions per system. Percent. Accuracy is the judge verdict CORRECT over all answerable questions, so refusals count against it. Judge: qwen2.5:7b (local (Ollama)), generator: qwen2.5:7b. Citation validity and support are measured on the raw model output, before invalid citations are removed, so S2, S3 and S4 share them. Cite support is a heuristic: a figure or key phrase from the claim appears in the cited block. Cited answers is the share of answered questions with at least one valid citation. Wrong is the share of answerable questions answered incorrectly, the hallucination rate. *Faithful is judged by the same local model and has not been validated against labels, treat it as indicative only.
+
+| System | Description | Accuracy | Accuracy when answered | Wrong | False refusal | Faithful* | Cite valid | Cite support | Cited answers | Latency s p50 / p95 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| S0 | Closed-book LLM, no retrieval | 26.0 | 27.7 | 68.0 | 6.0 | n/a | n/a | n/a | n/a | 5.5 / 12.3 |
+| S1 | Naive chunks, dense top-5, no rerank, no gate | 16.0 | 40.0 | 24.0 | 60.0 | 35.0 | 95.1 | 43.6 | 85.0 | 1.9 / 13.7 |
+| S2 | Selected retrieval (structured, hybrid, rerank, filter), no gate | 26.0 | 46.4 | 30.0 | 44.0 | 32.1 | 94.1 | 50.0 | 85.7 | 2.5 / 14.6 |
+| S3 | S2 + citation verification (invalid citations removed) | 26.0 | 46.4 | 30.0 | 44.0 | 32.1 | 94.1 | 50.0 | 85.7 | 2.5 / 14.6 |
+| S4 | S3 + confidence gate (full system) | 26.0 | 46.4 | 30.0 | 44.0 | 32.1 | 94.1 | 50.0 | 85.7 | 2.5 / 14.6 |
+
+## Abstention
+
+### Test split
+
+41 unanswerable questions (out-of-corpus company or unindexed fiscal year). Percent. Abstention counts the model replying INSUFFICIENT_EVIDENCE, the gate firing, or the judge ruling the answer a refusal.
+
+| System | Abstention recall | Abstention precision | Answered anyway (hallucinated) | False refusal on answerable |
+|---|---|---|---|---|
+| S1 | 100.0 | 39.4 | 0.0 | 63.0 |
+| S2 | 100.0 | 56.2 | 0.0 | 32.0 |
+| S3 | 100.0 | 56.2 | 0.0 | 32.0 |
+| S4 | 100.0 | 54.7 | 0.0 | 34.0 |
+
+Gate: top reranker score below 0.0414, chosen on dev with max recall with false refusal rate <= 0.1 (dev precision 70.0%, recall 36.8%, false refusal 6.0%, score AUC 0.67). The max-F1 threshold 0.9147 would refuse 64.0% of answerable dev questions, so it was not used.
+
+### Dev split
+
+19 unanswerable questions (out-of-corpus company or unindexed fiscal year). Percent. Abstention counts the model replying INSUFFICIENT_EVIDENCE, the gate firing, or the judge ruling the answer a refusal.
+
+| System | Abstention recall | Abstention precision | Answered anyway (hallucinated) | False refusal on answerable |
+|---|---|---|---|---|
+| S1 | 100.0 | 38.8 | 0.0 | 60.0 |
+| S2 | 100.0 | 46.3 | 0.0 | 44.0 |
+| S3 | 100.0 | 46.3 | 0.0 | 44.0 |
+| S4 | 100.0 | 46.3 | 0.0 | 44.0 |
+
+Gate: top reranker score below 0.0414, chosen on dev with max recall with false refusal rate <= 0.1 (dev precision 70.0%, recall 36.8%, false refusal 6.0%, score AUC 0.67). The max-F1 threshold 0.9147 would refuse 64.0% of answerable dev questions, so it was not used.
+
+## Judge validation
+
+Judge model qwen2.5:7b (local (Ollama)). Labels were written by Claude (AI assistant), blind to the judge verdicts, from dev answers only. They have not been audited by a human reviewer. The judge was changed after each round showed its mistakes, so only rows marked fresh are unbiased for that version. Recall columns are the share of items with that label that the judge reproduced. Judge v3 pooled over 97 labeled answers: 89.7% agreement.
+
+- v1: LLM decides every verdict
+- v2: v1 + refusal token by rule + stricter prompt on fabricated detail
+- v3: v2 + single-number references graded by rule (final answer vs reference, rounding, unit scaling)
+
+| Judge | Round | Fresh sample | Items | Agreement % | Kappa | CORRECT recall | INCORRECT recall | REFUSED recall |
+|---|---|---|---|---|---|---|---|---|
+| v1 | 1 | first look | 40 | 75.0 | 0.63 | 100.0 | 84.6 | 61.9 |
+| v2 | 2 | yes | 30 | 76.7 | 0.47 | 80.0 | 78.3 | 50.0 |
+| v3 | 1 | no, seen | 40 | 90.0 | 0.84 | 100.0 | 84.6 | 90.5 |
+| v3 | 2 | no, seen | 30 | 83.3 | 0.58 | 80.0 | 87.0 | 50.0 |
+| v3 | 3 | yes | 27 | 96.3 | 0.93 | 100.0 | 92.3 | 100.0 |
+
+## Generation variance
+
+Regenerating 5 dev answers at temperature 0.0 with a fixed seed: 5 of 5 back-to-back repeats were identical, but only 2 of 5 matched the earlier cached run. Output is stable within a server session and not bit-reproducible across sessions (prompt-cache state).
+
+Effect on the metrics (dev, S2, every answer regenerated once): text identical for 49.3% of items, judge verdict identical for 88.4%, accuracy 26.0% then 28.0%, refusal rate 44.0% then 46.0%, unanswerable abstained 19 then 19 of 19.
+
+## Serving
+
+_not measured_ (Phase 5).
