@@ -31,6 +31,14 @@ retrieval:
 models:
   embed: BAAI/bge-base-en-v1.5
   reranker: BAAI/bge-reranker-base
-  generator: qwen2.5:7b-instruct
+  # Ollama tag qwen2.5:7b is the instruct Q4_K_M build, same digest as qwen2.5:7b-instruct
+  generator: qwen2.5:7b
+generation:
+  temperature: 0.0
+  seed: 42
+  num_ctx: 6144
+  num_predict: 700
+  n_context_blocks: 5
+  keep_alive: 30m
 device_embed: cuda
 device_rerank: cuda

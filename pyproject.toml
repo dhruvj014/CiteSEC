@@ -47,3 +47,7 @@ src = ["src", "tests", "scripts"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/citesec/generation/prompts.py" = ["E501"]  # prompt text reads better unwrapped
+"src/citesec/eval/judge.py" = ["E501"]
