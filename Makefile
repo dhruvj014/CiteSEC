@@ -1,10 +1,11 @@
 PY := .venv/Scripts/python
 
-.PHONY: setup data parse index eval serve test lint
+.PHONY: setup data parse index eval serve ui profile report test lint
 
 setup:
 	python -m venv .venv
-	$(PY) -m pip install -e ".[dev]"
+	$(PY) -m pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+	$(PY) -m pip install -e ".[ml,serve,ui,dev]"
 
 data:
 	$(PY) scripts/download_data.py
@@ -42,7 +43,16 @@ eval-test:
 	$(PY) scripts/make_report.py
 
 serve:
-	@echo "Phase 5"
+	$(PY) -m uvicorn citesec.api.main:app --port 8765
+
+ui:
+	$(PY) -m streamlit run app/streamlit_app.py
+
+profile:
+	$(PY) scripts/profile_latency.py
+
+report:
+	$(PY) scripts/make_report.py
 
 test:
 	$(PY) -m pytest -q

@@ -297,6 +297,96 @@ def section_judge(runs: dict[str, dict]) -> str:
     return f"{note}\n\n{ver_lines}\n\n{table(head, rows)}"
 
 
+def ms_pair(d: dict | None) -> str:
+    return f"{d['p50']:.0f} / {d['p95']:.0f}" if d else "-"
+
+
+def section_serving(lat: dict | None) -> str:
+    if not lat:
+        return NOT_MEASURED
+    s = lat["settings"]
+    parts = [
+        f"{lat['n_queries']} queries through the full pipeline on {lat['gpu']} with the local "
+        f"{lat['generator']} generator via Ollama, after warm-up. Milliseconds, p50 / p95. "
+        f"{lat['query_set'].capitalize()}. Reranked candidates: {s['rerank_n']}, context blocks: "
+        f"{s['n_context']}, generation cap: {s['num_predict']} tokens."]
+    e2e = lat.get("end_to_end")
+    if e2e:
+        rows = [["all", str(e2e["n"])] + [ms_pair(e2e["overall"].get(k)) for k in STAGES_E2E]]
+        rows += [[name, str(d["n"])] + [ms_pair(d.get(k)) for k in STAGES_E2E]
+                 for name, d in e2e["by_outcome"].items()]
+        parts.append(table(["Outcome", "n"] + list(STAGES_E2E), rows))
+    rr = lat["optimization_rerank_candidates"]
+    rows = []
+    for n, d in rr["by_rerank_n"].items():
+        q = d["dev_quality_percent"]
+        rows.append([n, ms_pair(d["rerank_ms"]), ms_pair(d["retrieval_total_ms"]),
+                     f"{q['hit@1']:.1f}", f"{q['hit@5']:.1f}", f"{q['mrr']:.1f}",
+                     f"{q['doc_hit@5']:.1f}"])
+    parts.append("### Optimization A: rerank fewer candidates\n\nLatency on the same queries, "
+                 f"quality on the {rr['dev_questions']} dev questions (percent).\n\n"
+                 + table(["Candidates reranked", "Rerank ms", "Retrieval total ms", "Hit@1",
+                          "Hit@5", "MRR", "Doc-Hit@5"], rows))
+    c = lat["optimization_query_embedding_cache"]
+    parts.append("### Optimization B: query-embedding cache\n\nThe same queries run twice, so "
+                 "the second pass hits the cache.\n\n" + table(
+                     ["Pass", "Embed query ms", "Retrieval total ms"],
+                     [["cold", ms_pair(c["embed_query_ms_cold"]),
+                       ms_pair(c["retrieval_total_ms_cold"])],
+                      ["warm (cached)", ms_pair(c["embed_query_ms_warm"]),
+                       ms_pair(c["retrieval_total_ms_warm"])]]))
+    return "\n\n".join(parts)
+
+
+STAGES_E2E = ("retrieve", "rerank", "generate", "total")
+README_START, README_END = "<!-- RESULTS:START -->", "<!-- RESULTS:END -->"
+
+
+def readme_block(results_dir: Path) -> str:
+    """Compact headline tables for the README, built from the same JSON as BENCHMARKS.md."""
+    test = load(results_dir, "retrieval_test.json")
+    ans = load(results_dir, "answers_metrics_test.json")
+    lat = load(results_dir, "latency.json")
+    if not (test and ans):
+        return NOT_MEASURED
+    names = {"A": "Naive chunks + dense (baseline)", "C": "Structured chunks + dense",
+             "F": "Structured + hybrid + rerank (open retrieval)",
+             "G": "Structured + hybrid + rerank + company and year filter"}
+    rows = [[names[i], pct(test["configs"][i]["metrics"]["hit@5"]),
+             pct(test["configs"][i]["metrics"]["mrr"]),
+             pct(test["configs"][i]["metrics"]["doc_hit@5"])]
+            for i in names if i in test["configs"]]
+    out = [f"**Retrieval**, FinanceBench test split ({test['n_questions']} questions), percent, "
+           "gold is the exact filing page.\n\n"
+           + table(["Pipeline", "Hit@5", "MRR", "Doc-Hit@5"], rows)]
+    sysd = {"S0": "Closed-book LLM (baseline)", "S1": "Naive RAG",
+            "S4": "CiteSEC (full system)"}
+    rows = []
+    for s, label in sysd.items():
+        d = ans["systems"].get(s)
+        if not d:
+            continue
+        lt = d["latency_ms"]["total"]
+        rows.append([label, p(d["accuracy"]), p(d["wrong_answer_rate"]),
+                     p(d["abstention_recall_unanswerable"]) if d["n_unanswerable"] else "n/a",
+                     p(d["citations"]["validity"]) if d["citations"]["total"] else "n/a",
+                     f"{lt['p50'] / 1000:.1f} / {lt['p95'] / 1000:.1f}"])
+    first = ans["systems"]["S4"] if "S4" in ans["systems"] else next(iter(ans["systems"].values()))
+    out.append(f"**Answers**, same split ({first['n_answerable']} answerable and "
+               f"{first['n_unanswerable']} unanswerable questions), percent. Wrong is the share of "
+               "answerable questions answered incorrectly. Abstains is the share of unanswerable "
+               "questions refused.\n\n"
+               + table(["System", "Accuracy", "Wrong answers", "Abstains on unanswerable",
+                        "Valid citations", "Latency s p50 / p95"], rows))
+    if lat and lat.get("end_to_end"):
+        o = lat["end_to_end"]["overall"]["total"]
+        out.append(f"Serving latency, {lat['n_queries']} answerable queries end to end on "
+                   f"{lat['gpu']} with a local 7B model: p50 {o['p50'] / 1000:.1f} s, "
+                   f"p95 {o['p95'] / 1000:.1f} s. It is higher than the answer table because the "
+                   "table also counts unanswerable questions, which are mostly refused quickly.")
+    return "\n\n".join(out)
+
+
 def render(results_dir: Path) -> str:
     stats = load(results_dir, "data_stats.json")
     index = load(results_dir, "index_stats.json")
@@ -333,6 +423,6 @@ def render(results_dir: Path) -> str:
         "## Generation variance\n\n" + section_variance(
             load(results_dir, "generation_variance_dev.json"),
             load(results_dir, "generation_determinism.json")),
-        "## Serving\n\n" + NOT_MEASURED + " (Phase 5).",
+        "## Serving latency\n\n" + section_serving(load(results_dir, "latency.json")),
     ]
     return "\n\n".join(parts) + "\n"

@@ -24,14 +24,17 @@ dependencies = [
   "numpy==2.5.4",
   "faiss-cpu==1.15.1",
   "bm25s==0.3.13",
-  "sentence-transformers==6.1.0",
-  "transformers==5.19.0",
-  # torch is installed separately for CUDA, see README:
-  # pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 ]
 
 [project.optional-dependencies]
+# model libraries, needed to build indexes and to serve. torch itself is installed separately
+# for CUDA, see README: pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
+ml = ["sentence-transformers==6.1.0", "transformers==5.19.0"]
+serve = ["fastapi==0.143.0", "uvicorn==0.54.0", "prometheus-client==0.26.0"]
+ui = ["streamlit==1.65.0"]
 dev = ["pytest==9.1.1", "ruff==0.17.0"]
+# everything the unit tests need, no model libraries and no GPU
+test = ["citesec[dev,serve,ui]"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

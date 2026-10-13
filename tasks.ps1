@@ -24,6 +24,10 @@ switch ($Task) {
         & $py scripts/make_report.py
     }
     "eval-test" { & $py -m citesec.eval.run_retrieval_eval --split test; & $py scripts/make_report.py }
+    "serve" { & $py -m uvicorn citesec.api.main:app --port 8765 }
+    "ui"    { & $py -m streamlit run app/streamlit_app.py }
+    "profile" { & $py scripts/profile_latency.py }
+    "report" { & $py scripts/make_report.py }
     "test"  { & $py -m pytest -q }
     "lint"  { & $py -m ruff check . }
     default { Write-Error "Unknown task $Task. Phases 2-5 add index, eval, serve." }

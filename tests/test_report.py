@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from citesec.eval.report import NOT_MEASURED, pct, render, table
 
 METRICS = {"hit@1": 0.1, "hit@3": 0.2, "hit@5": 0.3, "hit@10": 0.4, "recall@5": 0.25, "mrr": 0.2,
@@ -29,7 +31,7 @@ def fake_answers(split: str) -> dict:
             "abstention_precision": 0.6, "answered_unanswerable_rate": 0.25,
             "accuracy_by_question_type": {"novel-generated": {"n": 4, "accuracy": 0.5}},
             "accuracy_by_reasoning": {"numerical reasoning": {"n": 5, "accuracy": 0.2}},
-            "citations": {"validity": 0.9, "support": 0.7, "cited_answer_rate": 0.85},
+            "citations": {"total": 51, "validity": 0.9, "support": 0.7, "cited_answer_rate": 0.85},
             "latency_ms": {"retrieve": {"p50": 50, "p95": 90},
                            "generate": {"p50": 9000, "p95": 20000},
                            "total": {"p50": 9500.0, "p95": 21000.0}}}
@@ -83,6 +85,66 @@ def test_answer_sections_render(tmp_path: Path) -> None:
     assert "only 2 of 5 matched the earlier cached run" in out
     assert "accuracy 26.0% then 28.0%" in out
     assert render(rd) == out
+
+
+def fake_latency() -> dict:
+    stat = lambda a, b: {"p50": a, "p95": b, "mean": a}  # noqa: E731
+    stages = {"retrieve": stat(15, 28), "rerank": stat(208, 247), "generate": stat(3514, 12819),
+              "total": stat(4051, 13323)}
+    return {
+        "gpu": "TestGPU", "generator": "gen", "n_queries": 100, "query_set": "test questions",
+        "settings": {"top_n": 50, "rerank_n": 50, "n_context": 5, "num_predict": 700},
+        "end_to_end": {"n": 100, "overall": stages,
+                       "by_outcome": {"answered": {"n": 61, **stages}}},
+        "optimization_rerank_candidates": {"dev_questions": 50, "by_rerank_n": {
+            "50": {"rerank_ms": stat(213, 250), "retrieval_total_ms": stat(224, 263),
+                   "dev_quality_percent": {"hit@1": 20.0, "hit@5": 40.0, "mrr": 30.7,
+                                           "doc_hit@5": 90.0}},
+            "30": {"rerank_ms": stat(129, 154), "retrieval_total_ms": stat(138, 165),
+                   "dev_quality_percent": {"hit@1": 18.0, "hit@5": 40.0, "mrr": 29.7,
+                                           "doc_hit@5": 88.0}}}},
+        "optimization_query_embedding_cache": {
+            "embed_query_ms_cold": stat(18, 40), "embed_query_ms_warm": stat(0, 0),
+            "retrieval_total_ms_cold": stat(246, 300), "retrieval_total_ms_warm": stat(220, 263)},
+    }
+
+
+def test_serving_section_and_readme_block_match_the_report(tmp_path: Path) -> None:
+    from citesec.eval.report import readme_block
+
+    rd = tmp_path / "results"
+    rd.mkdir()
+    (rd / "latency.json").write_text(json.dumps(fake_latency()))
+    (rd / "retrieval_test.json").write_text(json.dumps(fake_results("test") | {"configs": {
+        "A": {**fake_results("test")["configs"]["F"], "chunker": "naive", "rerank": False,
+              "metrics": {**METRICS, "hit@5": 0.24}},
+        "F": fake_results("test")["configs"]["F"]}}))
+    (rd / "answers_metrics_test.json").write_text(json.dumps(fake_answers("test")))
+    out = render(rd)
+    assert "| answered | 61 | 15 / 28 | 208 / 247 | 3514 / 12819 | 4051 / 13323 |" in out
+    assert "| 30 | 129 / 154 | 138 / 165 | 18.0 | 40.0 | 29.7 | 88.0 |" in out
+    assert "| warm (cached) | 0 / 0 | 220 / 263 |" in out
+    block = readme_block(rd)
+    # every headline number in the README block appears in the full report
+    for needle in ("24.0", "30.0", "50.0", "9.5 / 21.0"):
+        assert needle in block and needle in out
+    assert "p50 4.1 s, p95 13.3 s" in block and "TestGPU" in block
+    assert "refused quickly" in block
+
+
+def test_update_readme_replaces_only_the_marked_block() -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "make_report", Path(__file__).resolve().parents[1] / "scripts" / "make_report.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    text = "intro\n<!-- RESULTS:START -->\nold\n<!-- RESULTS:END -->\noutro"
+    new = mod.update_readme(text, "NEW TABLE")
+    assert new == "intro\n<!-- RESULTS:START -->\nNEW TABLE\n<!-- RESULTS:END -->\noutro"
+    assert mod.update_readme(new, "NEW TABLE") == new  # idempotent
+    with pytest.raises(SystemExit):
+        mod.update_readme("no markers", "x")
 
 
 def test_pct_and_table() -> None:

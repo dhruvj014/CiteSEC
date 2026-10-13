@@ -1,0 +1,189 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "generator": "qwen2.5:7b",
+  "n_queries": 100,
+  "query_set": "answerable test-split questions, used for timing only",
+  "settings": {
+    "top_n": 50,
+    "rerank_n": 50,
+    "n_context": 5,
+    "num_predict": 700
+  },
+  "optimization_query_embedding_cache": {
+    "embed_query_ms_cold": {
+      "p50": 18.4,
+      "p95": 40.2,
+      "mean": 21.0
+    },
+    "embed_query_ms_warm": {
+      "p50": 0.0,
+      "p95": 0.1,
+      "mean": 0.0
+    },
+    "retrieval_total_ms_cold": {
+      "p50": 246.3,
+      "p95": 299.8,
+      "mean": 244.4
+    },
+    "retrieval_total_ms_warm": {
+      "p50": 220.1,
+      "p95": 263.0,
+      "mean": 221.3
+    }
+  },
+  "optimization_rerank_candidates": {
+    "dev_questions": 50,
+    "by_rerank_n": {
+      "50": {
+        "rerank_ms": {
+          "p50": 213.0,
+          "p95": 250.3,
+          "mean": 210.6
+        },
+        "retrieval_total_ms": {
+          "p50": 223.7,
+          "p95": 263.0,
+          "mean": 220.5
+        },
+        "dev_quality_percent": {
+          "hit@1": 20.0,
+          "hit@5": 40.0,
+          "mrr": 30.7,
+          "doc_hit@5": 90.0
+        }
+      },
+      "30": {
+        "rerank_ms": {
+          "p50": 129.0,
+          "p95": 154.3,
+          "mean": 126.6
+        },
+        "retrieval_total_ms": {
+          "p50": 137.8,
+          "p95": 165.2,
+          "mean": 136.7
+        },
+        "dev_quality_percent": {
+          "hit@1": 18.0,
+          "hit@5": 40.0,
+          "mrr": 29.7,
+          "doc_hit@5": 88.0
+        }
+      },
+      "20": {
+        "rerank_ms": {
+          "p50": 103.5,
+          "p95": 122.7,
+          "mean": 102.6
+        },
+        "retrieval_total_ms": {
+          "p50": 112.3,
+          "p95": 137.8,
+          "mean": 112.7
+        },
+        "dev_quality_percent": {
+          "hit@1": 18.0,
+          "hit@5": 44.0,
+          "mrr": 30.5,
+          "doc_hit@5": 88.0
+        }
+      }
+    }
+  },
+  "end_to_end": {
+    "n": 100,
+    "overall": {
+      "retrieve": {
+        "p50": 14.8,
+        "p95": 27.5,
+        "mean": 17.4
+      },
+      "rerank": {
+        "p50": 208.2,
+        "p95": 247.2,
+        "mean": 205.5
+      },
+      "generate": {
+        "p50": 3514.4,
+        "p95": 12819.2,
+        "mean": 4291.5
+      },
+      "total": {
+        "p50": 4051.3,
+        "p95": 13322.9,
+        "mean": 4807.9
+      }
+    },
+    "by_outcome": {
+      "abstained_gate": {
+        "n": 6,
+        "retrieve": {
+          "p50": 18.5,
+          "p95": 21.7,
+          "mean": 14.4
+        },
+        "rerank": {
+          "p50": 205.5,
+          "p95": 222.3,
+          "mean": 173.0
+        },
+        "generate": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "mean": 0.0
+        },
+        "total": {
+          "p50": 226.1,
+          "p95": 233.1,
+          "mean": 187.5
+        }
+      },
+      "abstained_model": {
+        "n": 33,
+        "retrieve": {
+          "p50": 15.9,
+          "p95": 35.2,
+          "mean": 19.4
+        },
+        "rerank": {
+          "p50": 217.2,
+          "p95": 254.7,
+          "mean": 213.3
+        },
+        "generate": {
+          "p50": 1208.9,
+          "p95": 4045.3,
+          "mean": 1581.3
+        },
+        "total": {
+          "p50": 1761.7,
+          "p95": 4599.0,
+          "mean": 2111.6
+        }
+      },
+      "answered": {
+        "n": 61,
+        "retrieve": {
+          "p50": 13.6,
+          "p95": 22.9,
+          "mean": 16.5
+        },
+        "rerank": {
+          "p50": 206.2,
+          "p95": 238.6,
+          "mean": 204.5
+        },
+        "generate": {
+          "p50": 5482.4,
+          "p95": 13684.4,
+          "mean": 6179.7
+        },
+        "total": {
+          "p50": 6049.9,
+          "p95": 14209.6,
+          "mean": 6721.0
+        }
+      }
+    }
+  }
+}
