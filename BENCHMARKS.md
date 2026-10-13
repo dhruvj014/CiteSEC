@@ -189,6 +189,32 @@ Regenerating 5 dev answers at temperature 0.0 with a fixed seed: 5 of 5 back-to-
 
 Effect on the metrics (dev, S2, every answer regenerated once): text identical for 49.3% of items, judge verdict identical for 88.4%, accuracy 26.0% then 28.0%, refusal rate 44.0% then 46.0%, unanswerable abstained 19 then 19 of 19.
 
-## Serving
+## Serving latency
 
-_not measured_ (Phase 5).
+100 queries through the full pipeline on NVIDIA GeForce RTX 4060 Laptop GPU with the local qwen2.5:7b generator via Ollama, after warm-up. Milliseconds, p50 / p95. Answerable test-split questions, used for timing only. Reranked candidates: 50, context blocks: 5, generation cap: 700 tokens.
+
+| Outcome | n | retrieve | rerank | generate | total |
+|---|---|---|---|---|---|
+| all | 100 | 15 / 28 | 208 / 247 | 3514 / 12819 | 4051 / 13323 |
+| abstained_gate | 6 | 18 / 22 | 206 / 222 | 0 / 0 | 226 / 233 |
+| abstained_model | 33 | 16 / 35 | 217 / 255 | 1209 / 4045 | 1762 / 4599 |
+| answered | 61 | 14 / 23 | 206 / 239 | 5482 / 13684 | 6050 / 14210 |
+
+### Optimization A: rerank fewer candidates
+
+Latency on the same queries, quality on the 50 dev questions (percent).
+
+| Candidates reranked | Rerank ms | Retrieval total ms | Hit@1 | Hit@5 | MRR | Doc-Hit@5 |
+|---|---|---|---|---|---|---|
+| 50 | 213 / 250 | 224 / 263 | 20.0 | 40.0 | 30.7 | 90.0 |
+| 30 | 129 / 154 | 138 / 165 | 18.0 | 40.0 | 29.7 | 88.0 |
+| 20 | 104 / 123 | 112 / 138 | 18.0 | 44.0 | 30.5 | 88.0 |
+
+### Optimization B: query-embedding cache
+
+The same queries run twice, so the second pass hits the cache.
+
+| Pass | Embed query ms | Retrieval total ms |
+|---|---|---|
+| cold | 18 / 40 | 246 / 300 |
+| warm (cached) | 0 / 0 | 220 / 263 |
