@@ -17,7 +17,8 @@ class ChunkStore:
     def __init__(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        self.db = sqlite3.connect(path)
+        # read-mostly store shared by API worker threads, callers serialize access
+        self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.execute(
             "CREATE TABLE IF NOT EXISTS chunks ("
             "pos INTEGER PRIMARY KEY, chunk_id TEXT UNIQUE, doc_name TEXT, company TEXT, "

@@ -1,25 +1,14 @@
-import hashlib
 from pathlib import Path
 
 import numpy as np
 import pytest
+from tests.fakes import fake_embed
 
 from citesec.index.bm25 import BM25Index, tokenize
 from citesec.index.dense import DenseIndex
 from citesec.index.embed import EmbeddingCache, text_key
 from citesec.index.store import ChunkStore
 from citesec.schemas import Chunk
-
-DIM = 64
-
-
-def fake_embed(texts: list[str]) -> np.ndarray:
-    """Deterministic bag-of-words hash embedding so texts sharing words are close."""
-    out = np.zeros((len(texts), DIM), dtype=np.float32)
-    for i, t in enumerate(texts):
-        for w in t.lower().split():
-            out[i, int(hashlib.md5(w.encode()).hexdigest(), 16) % DIM] += 1.0
-    return out
 
 
 def make_chunks(n: int = 30) -> list[Chunk]:
@@ -66,6 +55,34 @@ def test_embedding_cache_roundtrip(tmp_path: Path) -> None:
     assert set(got) == set(keys)
     assert np.allclose(got[keys[0]].astype(np.float32), vecs[0], atol=1e-2)
     assert text_key("m1", "a") != text_key("m2", "a")
+
+
+def test_caching_embedder_skips_the_model_for_repeated_queries() -> None:
+    from tests.fakes import FakeEmbedder
+
+    from citesec.index.embed import CachingEmbedder
+
+    class Counting(FakeEmbedder):
+        calls: list[list[str]] = []
+
+        def encode_queries(self, queries):
+            self.calls.append(list(queries))
+            return super().encode_queries(queries)
+
+    inner = Counting()
+    inner.calls = []
+    cache = CachingEmbedder(inner, max_size=2)
+    a = cache.encode_queries(["alpha"])
+    assert np.array_equal(cache.encode_queries(["alpha"]), a) and inner.calls == [["alpha"]]
+    both = cache.encode_queries(["alpha", "beta", "beta"])  # only beta is new, order is kept
+    assert inner.calls[-1] == ["beta"] and both.shape[0] == 3
+    assert np.array_equal(both[1], both[2]) and np.array_equal(both[0], a[0])
+    cache.encode_queries(["gamma"])  # evicts the least recently used (alpha), size stays 2
+    cache.encode_queries(["alpha"])
+    # hits: alpha (2nd call), alpha and the repeated beta (3rd call). misses: alpha, beta, gamma,
+    # and alpha again after it was evicted
+    assert inner.calls[-1] == ["alpha"] and cache.hits == 3 and cache.misses == 4
+    assert cache.dim == inner.dim
 
 
 def test_dense_round_trip_rank_one_and_save_load(tmp_path: Path) -> None:

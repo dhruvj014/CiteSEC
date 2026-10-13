@@ -53,7 +53,11 @@ class Retriever:
         self.aliases = aliases or AliasTable({n: None for n in self.meta.names})
 
     def search(self, query: str, mode: str = "hybrid", rerank: bool = False,
-               use_filter: bool = False, top_n: int = 50) -> RetrievalResult:
+               use_filter: bool = False, top_n: int = 50,
+               query_filter: QueryFilter | None = None,
+               rerank_n: int | None = None) -> RetrievalResult:
+        """`query_filter` overrides the filter parsed from the question (used by the API when the
+        caller names companies or years). `rerank_n` reranks only the first N fused candidates."""
         if mode not in MODES:
             raise ValueError(f"mode must be one of {MODES}")
         if rerank and self.reranker is None:
@@ -65,9 +69,9 @@ class Retriever:
 
         qf = None
         allowed = None
-        if use_filter:
+        if use_filter or query_filter is not None:
             t0 = time.perf_counter()
-            qf = parse_query(query, self.aliases)
+            qf = query_filter if query_filter is not None else parse_query(query, self.aliases)
             allowed = self.meta.allowed(qf)
             tick("filter", t0)
 
@@ -97,10 +101,12 @@ class Retriever:
         scores = [score_of[c.chunk_id] for c in chunks]
         if rerank and chunks:
             t0 = time.perf_counter()
-            rs = self.reranker.score(query, [c.embed_text for c in chunks])
-            order = sorted(range(len(chunks)), key=lambda i: -rs[i])  # stable for equal scores
-            chunks = [chunks[i] for i in order]
-            scores = [rs[i] for i in order]
+            head, tail = chunks[:rerank_n], chunks[rerank_n:] if rerank_n else []
+            tail_scores = scores[len(head):]
+            rs = self.reranker.score(query, [c.embed_text for c in head])
+            order = sorted(range(len(head)), key=lambda i: -rs[i])  # stable for equal scores
+            chunks = [head[i] for i in order] + tail  # unreranked candidates keep their place
+            scores = [rs[i] for i in order] + tail_scores
             tick("rerank", t0)
         t["total"] = sum(t.values())
         return RetrievalResult(chunks, scores, t, qf)

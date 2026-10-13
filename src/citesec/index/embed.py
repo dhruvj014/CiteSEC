@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import sqlite3
+from collections import OrderedDict
 from collections.abc import Callable
 from pathlib import Path
 from typing import Protocol
@@ -51,6 +52,36 @@ class EmbeddingCache:
             [(k, v.astype(np.float16).tobytes()) for k, v in zip(keys, vecs, strict=True)],
         )
         self.db.commit()
+
+
+class CachingEmbedder:
+    """Remembers query vectors, so a repeated question (a UI rerun, a retried request) skips the
+    model. Bounded, least recently used. Passage encoding is passed through untouched."""
+
+    def __init__(self, inner: EmbedderLike, max_size: int = 512) -> None:
+        self.inner, self.max_size = inner, max_size
+        self._cache: OrderedDict[str, np.ndarray] = OrderedDict()
+        self.hits = self.misses = 0
+
+    @property
+    def dim(self) -> int:
+        return self.inner.dim
+
+    def encode_passages(self, texts: list[str]) -> np.ndarray:
+        return self.inner.encode_passages(texts)
+
+    def encode_queries(self, queries: list[str]) -> np.ndarray:
+        missing = [q for q in dict.fromkeys(queries) if q not in self._cache]
+        if missing:
+            for q, v in zip(missing, self.inner.encode_queries(missing), strict=True):
+                self._cache[q] = v
+                self.misses += 1
+        self.hits += len(queries) - len(missing)
+        for q in queries:
+            self._cache.move_to_end(q)
+        while len(self._cache) > self.max_size:
+            self._cache.popitem(last=False)
+        return np.stack([self._cache[q] for q in queries])
 
 
 class Embedder:
