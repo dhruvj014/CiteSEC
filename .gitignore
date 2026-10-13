@@ -9,6 +9,8 @@ data/*
 data/eval/*
 !data/eval/*.jsonl
 !data/eval/split.json
+!data/eval/unanswerable_split.json
+logs/
 models/
 *.egg-info/
 extras/
