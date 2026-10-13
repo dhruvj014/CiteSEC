@@ -1,0 +1,509 @@
+{
+  "split": "dev",
+  "judge": {
+    "model": "qwen2.5:7b",
+    "kind": "local (Ollama)"
+  },
+  "generator": "qwen2.5:7b",
+  "systems": {
+    "S0": {
+      "n_answerable": 50,
+      "n_unanswerable": 0,
+      "accuracy": 0.26,
+      "accuracy_when_answered": 0.2766,
+      "n_answered": 47,
+      "gold_page_in_context": null,
+      "outcomes_by_retrieval": {
+        "gold_page_in_context": {
+          "n": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "refused": 0
+        },
+        "gold_page_missing": {
+          "n": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "refused": 0
+        }
+      },
+      "unanswerable_abstention_source": {},
+      "false_refusals_by_cause": {
+        "gold_page_missing_from_context": 0,
+        "gold_page_in_context": 0
+      },
+      "accuracy_by_question_type": {
+        "domain-relevant": {
+          "n": 17,
+          "accuracy": 0.4706
+        },
+        "metrics-generated": {
+          "n": 17,
+          "accuracy": 0.0
+        },
+        "novel-generated": {
+          "n": 16,
+          "accuracy": 0.3125
+        }
+      },
+      "accuracy_by_reasoning": {
+        "information extraction": {
+          "n": 10,
+          "accuracy": 0.3
+        },
+        "logical reasoning": {
+          "n": 6,
+          "accuracy": 0.5
+        },
+        "numerical reasoning": {
+          "n": 18,
+          "accuracy": 0.1111
+        },
+        "unlabeled": {
+          "n": 16,
+          "accuracy": 0.3125
+        }
+      },
+      "false_refusal_rate": 0.06,
+      "wrong_answer_rate": 0.68,
+      "abstention_recall_unanswerable": null,
+      "abstention_precision": 0.0,
+      "answered_unanswerable_rate": null,
+      "faithfulness": null,
+      "n_faithfulness_judged": 0,
+      "citations": {
+        "total": 0,
+        "validity": null,
+        "support": null,
+        "invalid_removed": 0,
+        "cited_answer_rate": null,
+        "n_answered": 0
+      },
+      "latency_ms": {
+        "generate": {
+          "p50": 5532.2,
+          "p95": 12303.1,
+          "mean": 5685.686
+        },
+        "total": {
+          "p50": 5532.2,
+          "p95": 12303.1,
+          "mean": 5685.686
+        }
+      },
+      "judge_parse_errors": 0
+    },
+    "S1": {
+      "n_answerable": 50,
+      "n_unanswerable": 19,
+      "accuracy": 0.16,
+      "accuracy_when_answered": 0.4,
+      "n_answered": 20,
+      "gold_page_in_context": 0.24,
+      "outcomes_by_retrieval": {
+        "gold_page_in_context": {
+          "n": 12,
+          "correct": 4,
+          "incorrect": 3,
+          "refused": 5
+        },
+        "gold_page_missing": {
+          "n": 38,
+          "correct": 4,
+          "incorrect": 9,
+          "refused": 25
+        }
+      },
+      "unanswerable_abstention_source": {
+        "model_token": 19
+      },
+      "false_refusals_by_cause": {
+        "gold_page_missing_from_context": 25,
+        "gold_page_in_context": 5
+      },
+      "accuracy_by_question_type": {
+        "domain-relevant": {
+          "n": 17,
+          "accuracy": 0.2353
+        },
+        "metrics-generated": {
+          "n": 17,
+          "accuracy": 0.0
+        },
+        "novel-generated": {
+          "n": 16,
+          "accuracy": 0.25
+        }
+      },
+      "accuracy_by_reasoning": {
+        "information extraction": {
+          "n": 10,
+          "accuracy": 0.2
+        },
+        "logical reasoning": {
+          "n": 6,
+          "accuracy": 0.1667
+        },
+        "numerical reasoning": {
+          "n": 18,
+          "accuracy": 0.0556
+        },
+        "unlabeled": {
+          "n": 16,
+          "accuracy": 0.25
+        }
+      },
+      "false_refusal_rate": 0.6,
+      "wrong_answer_rate": 0.24,
+      "abstention_recall_unanswerable": 1.0,
+      "abstention_precision": 0.3878,
+      "answered_unanswerable_rate": 0.0,
+      "faithfulness": 0.35,
+      "n_faithfulness_judged": 20,
+      "citations": {
+        "total": 41,
+        "validity": 0.9512,
+        "support": 0.4359,
+        "invalid_removed": 0,
+        "cited_answer_rate": 0.85,
+        "n_answered": 20
+      },
+      "latency_ms": {
+        "generate": {
+          "p50": 1842.6,
+          "p95": 13655.3,
+          "mean": 4031.8014492753623
+        },
+        "retrieve": {
+          "p50": 38.7,
+          "p95": 50.3,
+          "mean": 39.95652173913044
+        },
+        "rerank": {
+          "p50": 0.0,
+          "p95": 0.0,
+          "mean": 0.0
+        },
+        "total": {
+          "p50": 1878.6,
+          "p95": 13694.1,
+          "mean": 4071.757971014493
+        }
+      },
+      "judge_parse_errors": 0
+    },
+    "S2": {
+      "n_answerable": 50,
+      "n_unanswerable": 19,
+      "accuracy": 0.26,
+      "accuracy_when_answered": 0.4643,
+      "n_answered": 28,
+      "gold_page_in_context": 0.4,
+      "outcomes_by_retrieval": {
+        "gold_page_in_context": {
+          "n": 20,
+          "correct": 9,
+          "incorrect": 4,
+          "refused": 7
+        },
+        "gold_page_missing": {
+          "n": 30,
+          "correct": 4,
+          "incorrect": 11,
+          "refused": 15
+        }
+      },
+      "unanswerable_abstention_source": {
+        "model_token": 19
+      },
+      "false_refusals_by_cause": {
+        "gold_page_missing_from_context": 15,
+        "gold_page_in_context": 7
+      },
+      "accuracy_by_question_type": {
+        "domain-relevant": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "metrics-generated": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "novel-generated": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "accuracy_by_reasoning": {
+        "information extraction": {
+          "n": 10,
+          "accuracy": 0.4
+        },
+        "logical reasoning": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "numerical reasoning": {
+          "n": 18,
+          "accuracy": 0.1111
+        },
+        "unlabeled": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "false_refusal_rate": 0.44,
+      "wrong_answer_rate": 0.3,
+      "abstention_recall_unanswerable": 1.0,
+      "abstention_precision": 0.4634,
+      "answered_unanswerable_rate": 0.0,
+      "faithfulness": 0.3214,
+      "n_faithfulness_judged": 28,
+      "citations": {
+        "total": 51,
+        "validity": 0.9412,
+        "support": 0.5,
+        "invalid_removed": 0,
+        "cited_answer_rate": 0.8571,
+        "n_answered": 28
+      },
+      "latency_ms": {
+        "generate": {
+          "p50": 1992.5,
+          "p95": 14050.6,
+          "mean": 4654.149275362319
+        },
+        "retrieve": {
+          "p50": 50.5,
+          "p95": 95.5,
+          "mean": 53.73623188405797
+        },
+        "rerank": {
+          "p50": 511.1,
+          "p95": 595.0,
+          "mean": 459.6028985507246
+        },
+        "total": {
+          "p50": 2542.3,
+          "p95": 14575.7,
+          "mean": 5167.488405797101
+        }
+      },
+      "judge_parse_errors": 0
+    },
+    "S3": {
+      "n_answerable": 50,
+      "n_unanswerable": 19,
+      "accuracy": 0.26,
+      "accuracy_when_answered": 0.4643,
+      "n_answered": 28,
+      "gold_page_in_context": 0.4,
+      "outcomes_by_retrieval": {
+        "gold_page_in_context": {
+          "n": 20,
+          "correct": 9,
+          "incorrect": 4,
+          "refused": 7
+        },
+        "gold_page_missing": {
+          "n": 30,
+          "correct": 4,
+          "incorrect": 11,
+          "refused": 15
+        }
+      },
+      "unanswerable_abstention_source": {
+        "model_token": 19
+      },
+      "false_refusals_by_cause": {
+        "gold_page_missing_from_context": 15,
+        "gold_page_in_context": 7
+      },
+      "accuracy_by_question_type": {
+        "domain-relevant": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "metrics-generated": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "novel-generated": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "accuracy_by_reasoning": {
+        "information extraction": {
+          "n": 10,
+          "accuracy": 0.4
+        },
+        "logical reasoning": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "numerical reasoning": {
+          "n": 18,
+          "accuracy": 0.1111
+        },
+        "unlabeled": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "false_refusal_rate": 0.44,
+      "wrong_answer_rate": 0.3,
+      "abstention_recall_unanswerable": 1.0,
+      "abstention_precision": 0.4634,
+      "answered_unanswerable_rate": 0.0,
+      "faithfulness": 0.3214,
+      "n_faithfulness_judged": 28,
+      "citations": {
+        "total": 51,
+        "validity": 0.9412,
+        "support": 0.5,
+        "invalid_removed": 3,
+        "cited_answer_rate": 0.8571,
+        "n_answered": 28
+      },
+      "latency_ms": {
+        "generate": {
+          "p50": 1992.5,
+          "p95": 14050.6,
+          "mean": 4654.149275362319
+        },
+        "retrieve": {
+          "p50": 50.5,
+          "p95": 95.5,
+          "mean": 53.73623188405797
+        },
+        "rerank": {
+          "p50": 511.1,
+          "p95": 595.0,
+          "mean": 459.6028985507246
+        },
+        "total": {
+          "p50": 2542.3,
+          "p95": 14575.7,
+          "mean": 5167.488405797101
+        }
+      },
+      "judge_parse_errors": 0
+    },
+    "S4": {
+      "n_answerable": 50,
+      "n_unanswerable": 19,
+      "accuracy": 0.26,
+      "accuracy_when_answered": 0.4643,
+      "n_answered": 28,
+      "gold_page_in_context": 0.4,
+      "outcomes_by_retrieval": {
+        "gold_page_in_context": {
+          "n": 20,
+          "correct": 9,
+          "incorrect": 4,
+          "refused": 7
+        },
+        "gold_page_missing": {
+          "n": 30,
+          "correct": 4,
+          "incorrect": 11,
+          "refused": 15
+        }
+      },
+      "unanswerable_abstention_source": {
+        "model_token": 12,
+        "gate": 7
+      },
+      "false_refusals_by_cause": {
+        "gold_page_missing_from_context": 15,
+        "gold_page_in_context": 7
+      },
+      "accuracy_by_question_type": {
+        "domain-relevant": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "metrics-generated": {
+          "n": 17,
+          "accuracy": 0.1765
+        },
+        "novel-generated": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "accuracy_by_reasoning": {
+        "information extraction": {
+          "n": 10,
+          "accuracy": 0.4
+        },
+        "logical reasoning": {
+          "n": 6,
+          "accuracy": 0.0
+        },
+        "numerical reasoning": {
+          "n": 18,
+          "accuracy": 0.1111
+        },
+        "unlabeled": {
+          "n": 16,
+          "accuracy": 0.4375
+        }
+      },
+      "false_refusal_rate": 0.44,
+      "wrong_answer_rate": 0.3,
+      "abstention_recall_unanswerable": 1.0,
+      "abstention_precision": 0.4634,
+      "answered_unanswerable_rate": 0.0,
+      "faithfulness": 0.3214,
+      "n_faithfulness_judged": 28,
+      "citations": {
+        "total": 51,
+        "validity": 0.9412,
+        "support": 0.5,
+        "invalid_removed": 3,
+        "cited_answer_rate": 0.8571,
+        "n_answered": 28
+      },
+      "latency_ms": {
+        "generate": {
+          "p50": 1992.5,
+          "p95": 14050.6,
+          "mean": 4547.06231884058
+        },
+        "retrieve": {
+          "p50": 50.5,
+          "p95": 95.5,
+          "mean": 53.73623188405797
+        },
+        "rerank": {
+          "p50": 511.1,
+          "p95": 595.0,
+          "mean": 459.6028985507246
+        },
+        "total": {
+          "p50": 2475.4,
+          "p95": 14575.7,
+          "mean": 5060.401449275362
+        }
+      },
+      "judge_parse_errors": 0
+    }
+  },
+  "gate": {
+    "threshold": 0.0414415,
+    "criterion": "max recall with false refusal rate <= 0.1",
+    "auc": 0.6694736842105263,
+    "precision": 0.7,
+    "recall": 0.3684210526315789,
+    "false_refusal_rate": 0.06,
+    "f1_optimal": {
+      "threshold": 0.914679,
+      "f1": 0.5217391304347826,
+      "precision": 0.36,
+      "recall": 0.9473684210526315,
+      "false_refusal_rate": 0.64
+    }
+  }
+}

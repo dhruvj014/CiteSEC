@@ -1,0 +1,15 @@
+{
+  "n_items": 69,
+  "text_identical": 0.4928,
+  "verdict_agreement": 0.8841,
+  "answerable": {
+    "n": 50,
+    "accuracy_run1": 0.26,
+    "accuracy_run2": 0.28,
+    "refusal_rate_run1": 0.44,
+    "refusal_rate_run2": 0.46
+  },
+  "unanswerable_abstained_run1": 19,
+  "unanswerable_abstained_run2": 19,
+  "n_unanswerable": 19
+}

@@ -7,6 +7,22 @@ switch ($Task) {
     "parse" { & $py scripts/parse_data.py }
     "index" { & $py scripts/build_index.py --chunker both; & $py scripts/validate_phase2.py }
     "eval"  { & $py -m citesec.eval.run_retrieval_eval --split dev --select --verify-repeat; & $py scripts/analyze_failures.py; & $py scripts/make_report.py }
+    "answers-dev" {
+        $m = "citesec.eval.run_answer_eval"
+        & $py -m $m --split dev --stage generate
+        & $py -m $m --split dev --stage assemble
+        & $py -m $m --split dev --stage judge
+        & $py -m $m --split dev --stage metrics
+    }
+    "answers-test" {
+        $m = "citesec.eval.run_answer_eval"
+        & $py -m $m --split test --stage retrieve
+        & $py -m $m --split test --stage generate
+        & $py -m $m --split test --stage assemble
+        & $py -m $m --split test --stage judge
+        & $py -m $m --split test --stage metrics
+        & $py scripts/make_report.py
+    }
     "eval-test" { & $py -m citesec.eval.run_retrieval_eval --split test; & $py scripts/make_report.py }
     "test"  { & $py -m pytest -q }
     "lint"  { & $py -m ruff check . }

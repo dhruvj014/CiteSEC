@@ -1,0 +1,50 @@
+{
+  "model": "qwen2.5:7b",
+  "temperature": 0.0,
+  "seed": 42,
+  "n": 5,
+  "n_identical_to_cached": 2,
+  "n_fresh_pairs_identical": 5,
+  "items": [
+    {
+      "id": "financebench_id_03029",
+      "identical_to_cached": false,
+      "two_fresh_runs_identical": true,
+      "first_diff_char": 4,
+      "similarity_to_cached": 0.0791,
+      "chars": 2145
+    },
+    {
+      "id": "financebench_id_00499",
+      "identical_to_cached": false,
+      "two_fresh_runs_identical": true,
+      "first_diff_char": 218,
+      "similarity_to_cached": 0.7733,
+      "chars": 344
+    },
+    {
+      "id": "financebench_id_00807",
+      "identical_to_cached": true,
+      "two_fresh_runs_identical": true,
+      "first_diff_char": null,
+      "similarity_to_cached": 1.0,
+      "chars": 58
+    },
+    {
+      "id": "financebench_id_07966",
+      "identical_to_cached": true,
+      "two_fresh_runs_identical": true,
+      "first_diff_char": null,
+      "similarity_to_cached": 1.0,
+      "chars": 58
+    },
+    {
+      "id": "financebench_id_04735",
+      "identical_to_cached": false,
+      "two_fresh_runs_identical": true,
+      "first_diff_char": 164,
+      "similarity_to_cached": 0.5722,
+      "chars": 531
+    }
+  ]
+}

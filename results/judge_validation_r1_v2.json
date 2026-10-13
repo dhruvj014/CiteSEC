@@ -1,0 +1,62 @@
+{
+  "n": 40,
+  "agreement": 0.9,
+  "cohen_kappa": 0.8374,
+  "per_label": {
+    "CORRECT": {
+      "n": 6,
+      "judge_agrees": 6,
+      "recall": 1.0
+    },
+    "INCORRECT": {
+      "n": 13,
+      "judge_agrees": 11,
+      "recall": 0.8462
+    },
+    "REFUSED": {
+      "n": 21,
+      "judge_agrees": 19,
+      "recall": 0.9048
+    }
+  },
+  "confusion": {
+    "label=CORRECT judge=CORRECT": 6,
+    "label=INCORRECT judge=CORRECT": 2,
+    "label=INCORRECT judge=INCORRECT": 11,
+    "label=REFUSED judge=INCORRECT": 2,
+    "label=REFUSED judge=REFUSED": 19
+  },
+  "split": "dev",
+  "round": 1,
+  "judge_version": "v2",
+  "judge_model": "qwen2.5:7b",
+  "judge_kind": "local (Ollama)",
+  "labeled_by": "Claude (AI assistant), labeled blind to the judge verdicts by comparing the reference answer with the candidate answer; owner audit pending",
+  "label_counts": {
+    "REFUSED": 21,
+    "INCORRECT": 13,
+    "CORRECT": 6
+  },
+  "disagreements": [
+    {
+      "val_id": "jv_25",
+      "label": "INCORRECT",
+      "judge": "CORRECT"
+    },
+    {
+      "val_id": "jv_26",
+      "label": "REFUSED",
+      "judge": "INCORRECT"
+    },
+    {
+      "val_id": "jv_28",
+      "label": "INCORRECT",
+      "judge": "CORRECT"
+    },
+    {
+      "val_id": "jv_30",
+      "label": "REFUSED",
+      "judge": "INCORRECT"
+    }
+  ]
+}
